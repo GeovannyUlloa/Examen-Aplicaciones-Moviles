@@ -48,6 +48,15 @@
             <p>{{ viaje.pasajerosActuales }}/{{ viaje.pasajerosMaximos }} pasajeros</p>
           </ion-label>
         </ion-item>
+
+        <ion-item>
+          <ion-icon name="cash-outline" slot="start"></ion-icon>
+          <ion-label>
+            <h2>Pago por Pasajero</h2>
+            <p>{{ viaje.pagoPorPasajero ?? 0 | currency:'CLP ' }}</p>
+          </ion-label>
+        </ion-item>
+
       </ion-list>
     </ion-card-content>
   </ion-card>

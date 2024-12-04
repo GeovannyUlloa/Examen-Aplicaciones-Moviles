@@ -6,7 +6,7 @@
   </div>
 
   <ion-list>
-    <ion-item *ngFor="let viaje of viajes" (click)="userRole === 'propietario' ? verPasajeros(viaje) : selectTrip(viaje)">
+    <ion-item *ngFor="let viaje of viajes" (click)="userRole === 'dueño' ? verPasajeros(viaje) : selectTrip(viaje)">
       <ion-avatar slot="start">
         <ion-icon name="car-outline" size="large"></ion-icon>
       </ion-avatar>
@@ -17,13 +17,14 @@
           <strong>Fecha: </strong> {{ viaje.fecha | date:'dd/MM/yyyy' }} <br>
           <strong>Hora: </strong> {{ viaje.hora }} <br>
           <strong>Punto de Encuentro: </strong> {{ viaje.puntoEncuentro }} <br>
-          <strong>Pasajeros: </strong> {{ viaje.pasajerosActuales }}/{{ viaje.pasajerosMaximos }}
+          <strong>Pasajeros: </strong> {{ viaje.pasajerosActuales }}/{{ viaje.pasajerosMaximos }} <br>
+          <strong>Pago por Pasajero: </strong> {{ viaje.pagoPorPasajero ?? 0 | currency:'CLP ' }}
         </div>
       </ion-label>
     </ion-item>
   </ion-list>
 
-  <ion-fab *ngIf="userRole === 'propietario'" vertical="bottom" horizontal="center" slot="fixed">
+  <ion-fab *ngIf="userRole === 'dueño'" vertical="bottom" horizontal="center" slot="fixed">
     <ion-fab-button (click)="addTrip()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>

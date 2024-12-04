@@ -18,6 +18,7 @@ export class AddTripPage {
     puntoEncuentro: '',
     pasajerosActuales: 0,
     pasajerosMaximos: 1,
+    pagoPorPasajero: 0, // Nueva propiedad
   };
 
   constructor(private viajesService: ViajesService, private router: Router, private utilsService: UtilsService) {}

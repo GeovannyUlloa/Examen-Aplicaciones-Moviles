@@ -1,19 +1,31 @@
 import { inject, Injectable } from '@angular/core';
-import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail } from 'firebase/auth';
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, updateProfile, sendPasswordResetEmail, onAuthStateChanged } from 'firebase/auth';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { User } from '../models/user.model';
 import { doc, getDoc, getFirestore, setDoc } from '@angular/fire/firestore';
 import { UtilsService } from './utils.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FirebaseService {
 
+  private userSubject = new BehaviorSubject<any>(null);  // Estado del usuario
+  public user$ = this.userSubject.asObservable();  // Observable para suscribirse
+
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
   utilsService = inject(UtilsService);
+
+  constructor() {
+    // Suscripción a cambios de autenticación
+    const auth = getAuth();
+    onAuthStateChanged(auth, (user) => {
+      this.userSubject.next(user);  // Actualiza el estado del usuario
+    });
+  }
 
   get isAuthenticated(): boolean {
     return getAuth().currentUser !== null; // Si currentUser es null, no está autenticado
@@ -23,8 +35,8 @@ export class FirebaseService {
     return getAuth();
   }
 
-  signIn(user: User) {
-    return signInWithEmailAndPassword(getAuth(), user.email, user.password);
+signIn(user: User) {
+    return signInWithEmailAndPassword(getAuth(), user.email, user.password)
   }
 
   signUp(user: User) {
@@ -47,7 +59,7 @@ export class FirebaseService {
     try {
       const docRef = doc(getFirestore(), path);
       const docSnap = await getDoc(docRef);
-      
+
       if (docSnap.exists()) {
         console.log('Documento obtenido:', docSnap.data());  // Asegúrate de que el documento contiene los datos correctos
         return docSnap.data();
@@ -60,30 +72,35 @@ export class FirebaseService {
       return null;
     }
   }
-  
+
 
   sendRecoveryEmail(email: string) {
     return sendPasswordResetEmail(getAuth(), email);
   }
 
   signOut() {
-    getAuth().signOut();
-    localStorage.removeItem('user');
-    this.utilsService.routerLink('/auth');
+    getAuth().signOut().then(() => {
+      localStorage.removeItem('user');
+      localStorage.removeItem('role');
+      localStorage.removeItem('selectedTrip');
+      this.utilsService.routerLink('/auth');  // O redirige al home
+    }).catch((error) => {
+      console.error('Error al cerrar sesión:', error);
+    });
   }
 
   // Nuevo método para obtener el rol del usuario
   async getUserRole(): Promise<string> {
     const currentUser = getAuth().currentUser;
-  
+
     if (!currentUser) {
       console.error('No hay un usuario autenticado.');
       return 'pasajero';  // Valor predeterminado para evitar errores
     }
-  
+
     try {
       const userDoc = await this.getDocument(`usuarios/${currentUser.uid}`);
-  
+
       if (userDoc && userDoc['role']) {
         console.log('Rol del usuario:', userDoc['role']);  // Verifica el valor del rol
         return userDoc['role'];  // Devuelve el rol
@@ -96,6 +113,6 @@ export class FirebaseService {
       return 'pasajero';  // Valor por defecto si ocurre un error
     }
   }
-  
-  
+
+
 }

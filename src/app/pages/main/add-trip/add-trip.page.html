@@ -52,6 +52,15 @@
       <div *ngIf="formulario.controls['pasajerosMaximos'].errors?.['min']">Debe ser un valor mayor o igual a 1</div>
     </div>
 
+    <ion-item>
+      <ion-label position="stacked">Pago por Pasajero (CLP)</ion-label>
+      <ion-input type="number" [(ngModel)]="nuevoViaje.pagoPorPasajero" name="pagoPorPasajero" required min="0"></ion-input>
+    </ion-item>
+    <div class="validators" *ngIf="formulario.submitted && !formulario.controls['pagoPorPasajero'].valid">
+      <div *ngIf="formulario.controls['pagoPorPasajero'].errors?.['required']">El pago por pasajero es requerido</div>
+      <div *ngIf="formulario.controls['pagoPorPasajero'].errors?.['min']">Debe ser un valor mayor o igual a 0</div>
+    </div>
+
     <ion-button expand="full" type="submit" color="primary">Agregar Viaje</ion-button>
   </form>
 </ion-content>
