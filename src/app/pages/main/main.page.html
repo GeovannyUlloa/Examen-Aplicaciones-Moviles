@@ -1,6 +1,6 @@
 <ion-menu contentId="menu-content" menuId="menu-content" side="start">
     <app-header title="Menú"></app-header>
-
+  
     <ion-content class="ion-text-center">
         <ion-avatar>
             <ion-icon class="empty-icon" name="person-circle-outline"></ion-icon>
@@ -13,11 +13,12 @@
                 <ion-label>{{ p.title }}</ion-label>
             </ion-item>
         </ion-menu-toggle>
-        <ion-item [routerLink]="['/main/add-trip']">
+        <ion-item *ngIf="isConductor()" [routerLink]="['/main/add-trip']">
             <ion-icon slot="start" name="add"></ion-icon>
             <ion-label>Agregar Viaje</ion-label>
         </ion-item>
     </ion-content>
+  
     <ion-footer class="ion-no-border safe-p-bottom">
         <ion-toolbar auto-hide="false">
             <ion-item (click)="signOut()" Lines="none">
@@ -26,6 +27,7 @@
             </ion-item>
         </ion-toolbar>
     </ion-footer>
-</ion-menu>
-
-<ion-router-outlet id="menu-content" main></ion-router-outlet>
+  </ion-menu>
+  
+  <ion-router-outlet id="menu-content" main></ion-router-outlet>
+  

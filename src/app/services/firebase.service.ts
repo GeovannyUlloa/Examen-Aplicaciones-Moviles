@@ -39,9 +39,28 @@ export class FirebaseService {
     return setDoc(doc(getFirestore(), path), data);
   }
 
-  async getDocument(path: any) {
-    return (await getDoc(doc(getFirestore(), path))).data();
+  // async getDocument(path: any) {
+  //   return (await getDoc(doc(getFirestore(), path))).data();
+  // }
+
+  async getDocument(path: string) {
+    try {
+      const docRef = doc(getFirestore(), path);
+      const docSnap = await getDoc(docRef);
+      
+      if (docSnap.exists()) {
+        console.log('Documento obtenido:', docSnap.data());  // Asegúrate de que el documento contiene los datos correctos
+        return docSnap.data();
+      } else {
+        console.log('No se encontró el documento.');
+        return null;  // Si no existe, retorna null
+      }
+    } catch (error) {
+      console.error('Error al obtener el documento:', error);
+      return null;
+    }
   }
+  
 
   sendRecoveryEmail(email: string) {
     return sendPasswordResetEmail(getAuth(), email);
@@ -56,18 +75,27 @@ export class FirebaseService {
   // Nuevo método para obtener el rol del usuario
   async getUserRole(): Promise<string> {
     const currentUser = getAuth().currentUser;
-
+  
     if (!currentUser) {
-      throw new Error('No hay un usuario autenticado.');
+      console.error('No hay un usuario autenticado.');
+      return 'pasajero';  // Valor predeterminado para evitar errores
     }
-
+  
     try {
-      // Se asume que la colección de usuarios está en Firestore con documentos por UID
       const userDoc = await this.getDocument(`usuarios/${currentUser.uid}`);
-      return userDoc?.['role'] || 'pasajero'; // Valor predeterminado 'pasajero' si el rol no existe
+  
+      if (userDoc && userDoc['role']) {
+        console.log('Rol del usuario:', userDoc['role']);  // Verifica el valor del rol
+        return userDoc['role'];  // Devuelve el rol
+      } else {
+        console.log('No se encontró el rol del usuario.');
+        return 'pasajero';  // Valor por defecto si no hay rol
+      }
     } catch (error) {
       console.error('Error al obtener el rol del usuario:', error);
-      throw new Error('No se pudo obtener el rol del usuario.');
+      return 'pasajero';  // Valor por defecto si ocurre un error
     }
   }
+  
+  
 }

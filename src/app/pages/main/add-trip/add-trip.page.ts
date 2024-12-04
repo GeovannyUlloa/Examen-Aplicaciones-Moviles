@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { ViajesService } from '../../../viajes.service';
+import { UtilsService } from 'src/app/services/utils.service';
 
 @Component({
   selector: 'app-add-trip',
@@ -19,7 +20,15 @@ export class AddTripPage {
     pasajerosMaximos: 1,
   };
 
-  constructor(private viajesService: ViajesService, private router: Router) {}
+  constructor(private viajesService: ViajesService, private router: Router, private utilsService: UtilsService) {}
+
+  ngOnInit() {
+    // Obtener el nombre del usuario desde el almacenamiento local
+    const usuario = this.utilsService.getLocalStorage('user');
+    if (usuario && usuario.name) {
+      this.nuevoViaje.conductor = usuario.name;  // Asocia el nombre del dueño como conductor
+    }
+  }
 
   agregarNuevoViaje() {
 

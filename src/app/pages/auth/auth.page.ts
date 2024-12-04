@@ -54,27 +54,28 @@ export class AuthPage implements OnInit {
   async getUserInfo(uid: string) {
     if (this.form.valid) {
       const loading = await this.utilsService.loading();
-
       await loading.present();
-
+  
       let path = `users/${uid}`;
-
+  
       this.firebaseService.getDocument(path)
         .then((user: User) => {
-
-
+          // Guarda el usuario completo en localStorage
           this.utilsService.saveLocalStorage('user', user);
+          
+          // Guarda solo el rol en localStorage
+          this.utilsService.saveLocalStorage('role', user.role);
+  
+          // Redirige a la página de inicio
           this.utilsService.routerLink('main/home');
           this.form.reset();
-
           this.utilsService.presentToast({
-            message: `Bienvenido ${user.name}`,
-            duration: 1500,
-            color: 'primary',
-            position: 'bottom',
-            icon: 'person-circle-outline'
-          })
-
+              message: `Bienvenido ${user.name}`,
+              duration: 1500,
+              color: 'primary',
+              position: 'bottom',
+              icon: 'person-circle-outline'
+          });
         }).catch(error => {
           console.log(error);
           this.utilsService.presentToast({
@@ -83,13 +84,12 @@ export class AuthPage implements OnInit {
             color: 'danger',
             position: 'bottom',
             icon: 'alert-circle-outline'
-          })
+          });
         }).finally(() => {
           loading.dismiss();
-        })
+        });
     } else {
       console.log('Formulario inválido');
     }
   }
-
 }

@@ -20,11 +20,11 @@ export class MainPage implements OnInit {
     { title: 'Perfil', url: '/main/profile', icon: 'person-outline'}
   ]
 
+  userRole: string = '';  // Variable para almacenar el rol del usuario
+
+
   ngOnInit() {
-    // this.router.events.subscribe((event: any) => {
-    //   if(event?.url) this.currentPath = event.url
-    // })
-    // this.username = sessionStorage.getItem('username');
+    this.getUserRole();
   }
 
   constructor() { }
@@ -35,6 +35,16 @@ export class MainPage implements OnInit {
 
   user(): User {
     return this.utilsService.getLocalStorage('user');
+  }
+
+  // Método para obtener el rol del usuario y actualizar la variable userRole
+  async getUserRole() {
+    this.userRole = await this.firebaseService.getUserRole();
+  }
+
+  // Método para verificar si el usuario es un "dueño"
+  isConductor(): boolean {
+    return this.userRole === 'dueño';  // Si el rol es "dueño", retornamos true
   }
 
 }

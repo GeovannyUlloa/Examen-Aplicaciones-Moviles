@@ -5,31 +5,28 @@ import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { TimeService } from 'src/app/services/time.service';
-// import { EmailService } from 'src/app/services/email.service'; 
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
 })
 export class HomePage implements OnInit {
-
   firebaseService = inject(FirebaseService);
   utilsService = inject(UtilsService);
+  private timeService = inject(TimeService);
 
-  // emailService = inject(EmailService); 
   username: string | null = '';
   viajes: any[] = [];
   horaChile: string = '';  
-
-  private timeService = inject(TimeService);
-  
   userRole: string = ''; 
-
+  currentUser: User | null = null;
+  
   constructor(private viajesService: ViajesService, private router: Router) { }
 
   ngOnInit() {
     this.userRole = this.utilsService.getLocalStorage('role') || '';
-
+    this.currentUser = this.utilsService.getLocalStorage('user');
     this.cargarViajes();
     this.timeService.hora$.subscribe(hora => {
       this.horaChile = hora;
@@ -37,72 +34,59 @@ export class HomePage implements OnInit {
   }
 
   cargarViajes() {
-    this.viajesService.obtenerViajes().subscribe(viajes => {
-      this.viajes = viajes;
-    });
-  }
-  selectTrip(viaje: any) {
-    this.utilsService.saveLocalStorage('selectedTrip', viaje);  // Guardamos el viaje seleccionado en el almacenamiento local
-    this.router.navigate(['/main/confirm-trip']);  // Redirigimos a la página de confirmación
-  }
-
-  // Verificar si el usuario es el conductor del viaje
-  esConductor(viaje: any): boolean {
-    const currentUser = this.user();
-    return currentUser && viaje.conductor === currentUser.name;
+    if (this.userRole === 'dueño') {
+      // Si es dueño, obtener solo sus viajes
+      this.viajesService.obtenerViajesDelConductor().subscribe(viajes => {
+        this.viajes = viajes;
+      });
+    } else {
+      // Si es pasajero, obtener todos los viajes
+      this.viajesService.obtenerViajes().subscribe(viajes => {
+        this.viajes = viajes;
+      });
+    }
   }
 
-  // Mostrar detalles de los pasajeros para el conductor
+  selectTrip(viaje: any, event?: Event) {
+    if (event) {
+      event.stopPropagation();
+    }
+    
+    if (this.userRole === 'dueño') {
+      this.verPasajeros(viaje);
+    } else if (viaje.pasajerosActuales >= viaje.pasajerosMaximos) {
+      this.utilsService.presentToast({
+        message: 'Este viaje está lleno',
+        duration: 2500,
+        color: 'warning',
+        position: 'middle',
+        icon: 'alert-circle-outline'
+      });
+    } else {
+      this.utilsService.saveLocalStorage('selectedTrip', viaje);
+      this.router.navigate(['/main/confirm-trip']);
+    }
+  }
+
   verPasajeros(viaje: any) {
     if (this.esConductor(viaje)) {
-      // Redirigir a una página o modal que muestra los pasajeros del viaje
       this.router.navigate(['/main/viaje-detalle'], { queryParams: { id: viaje.id } });
     } else {
       this.utilsService.presentToast({
         message: 'No tienes permiso para ver los pasajeros de este viaje.',
         duration: 2500,
         color: 'danger',
-        position: 'bottom',
+        position: 'middle',
         icon: 'alert-circle-outline'
       });
     }
   }
 
-//   reservarViaje(viaje: any) {
-//     if (this.userRole === 'pasajero') {
-//         this.emailService.enviarConfirmacion(viaje, this.user()?.email, viaje.conductorEmail)
-//             .then(() => {
-//                 this.utilsService.presentToast({
-//                     message: 'Reserva realizada con éxito.',
-//                     duration: 2500,
-//                     color: 'success',
-//                     position: 'bottom',
-//                     icon: 'checkmark-circle-outline'
-//                 });
-                
-//                 // Aquí podrías llamar al método agregarReserva para actualizar Firestore
-//                 this.viajesService.agregarReserva(viaje, this.user()?.email);
-//             })
-//             .catch((error) => {
-//                 this.utilsService.presentToast({
-//                     message: 'Error al realizar la reserva.',
-//                     duration: 2500,
-//                     color: 'danger',
-//                     position: 'bottom',
-//                     icon: 'alert-circle-outline'
-//                 });
-//                 console.log(error);
-//             });
-//     } else {
-//         this.utilsService.presentToast({
-//             message: 'No tienes permiso para reservar un viaje.',
-//             duration: 2500,
-//             color: 'danger',
-//             position: 'bottom',
-//             icon: 'alert-circle-outline'
-//         });
-//     }
-// }
+  esConductor(viaje: any): boolean {
+    const currentUser = this.user();
+    return currentUser && viaje.conductorId === currentUser.uid;
+  }
+
   addTrip() {
     this.router.navigate(['/main/add-trip']);
   }
