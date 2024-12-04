@@ -1,0 +1,14 @@
+<<app-header [showMenu]="true" title="Confirmación de Reserva"></app-header>
+<ion-content>
+  <div class="ion-padding-top title-container">
+    <h2>Confirmación de Reserva</h2>
+    <div *ngIf="selectedTrip">
+      <p><strong>Destino:</strong> {{ selectedTrip.destino }}</p>
+      <p><strong>Conductor:</strong> {{ selectedTrip.conductor }}</p>
+      <p><strong>Fecha:</strong> {{ selectedTrip.fecha | date:'dd/MM/yyyy' }}</p>
+      <p><strong>Hora:</strong> {{ selectedTrip.hora }}</p>
+      <p><strong>Punto de Encuentro:</strong> {{ selectedTrip.puntoEncuentro }}</p>
+    </div>
+    <ion-button expand="full" (click)="confirmReservation()">Confirmar Reserva</ion-button>
+  </div>
+</ion-content>

@@ -1,0 +1,23 @@
+<app-header [showMenu]="true" title="Detalles del Viaje"></app-header>
+
+<ion-content *ngIf="viaje">
+  <div class="ion-padding">
+    <h2>Viaje a {{ viaje.destino }}</h2>
+    <p><strong>Conductor:</strong> {{ viaje.conductor }}</p>
+    <p><strong>Fecha:</strong> {{ viaje.fecha | date:'dd/MM/yyyy' }}</p>
+    <p><strong>Hora:</strong> {{ viaje.hora }}</p>
+    <p><strong>Punto de Encuentro:</strong> {{ viaje.puntoEncuentro }}</p>
+    <p><strong>Pasajeros:</strong> {{ viaje.pasajerosActuales }}/{{ viaje.pasajerosMaximos }}</p>
+  </div>
+
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Pasajeros Inscritos</ion-label>
+    </ion-list-header>
+    <ion-item *ngFor="let pasajero of viaje.pasajeros">
+      <ion-label>
+        {{ pasajero.nombre }} - {{ pasajero.email }}
+      </ion-label>
+    </ion-item>
+  </ion-list>
+</ion-content>

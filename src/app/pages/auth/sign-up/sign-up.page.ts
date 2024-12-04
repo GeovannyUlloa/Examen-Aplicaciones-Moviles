@@ -18,49 +18,42 @@ export class SignUpPage implements OnInit {
     uid: new FormControl(''),
     name: new FormControl('', [Validators.required, Validators.minLength(3)]),
     email: new FormControl('', [Validators.required, Validators.email]),
-    password: new FormControl('', [Validators.required])
+    password: new FormControl('', [Validators.required]),
+    role: new FormControl('', [Validators.required]) 
   })
   constructor() { }
 
   ngOnInit() {
   }
-
   async submit() {
-    if(this.form.valid){
+    if (this.form.valid) {
       const loading = await this.utilsService.loading();
-
       await loading.present();
-
+  
       this.firebaseService.signUp(this.form.value as User)
-      .then(async resp => {
-        await this.firebaseService.updateUser(this.form.value.name)
-        
-        let uid = resp.user.uid;
-        this.form.controls.uid.setValue(uid);
-        //Funcion del seteo
-        this.setUserInfo(uid);
-
-      }).catch(error => {
-        console.log(error);
-        this.utilsService.presentToast({
-          message: error.message,
-          duration: 2500,
-          color: 'danger',
-          position: 'bottom',
-          icon: 'alert-circle-outline'
-        })
-      }).finally(() => {
-        loading.dismiss();
-      })
-
-      // const username = this.form.value.username || '';
-
-      // sessionStorage.setItem('username', username);
-
-      // this.router.navigate(['/main/home']);
-
-      // console.log(this.form.value);
-    
+        .then(async resp => {
+          await this.firebaseService.updateUser(this.form.value.name);
+          
+          let uid = resp.user.uid;
+          this.form.controls.uid.setValue(uid);
+          
+          // Guardar el rol en el almacenamiento local
+          this.utilsService.saveLocalStorage('role', this.form.value.role); // Guardamos el rol aquí
+          
+          // Función del seteo de la información del usuario
+          this.setUserInfo(uid);
+        }).catch(error => {
+          console.log(error);
+          this.utilsService.presentToast({
+            message: error.message,
+            duration: 2500,
+            color: 'danger',
+            position: 'bottom',
+            icon: 'alert-circle-outline'
+          });
+        }).finally(() => {
+          loading.dismiss();
+        });
     }
   }
 

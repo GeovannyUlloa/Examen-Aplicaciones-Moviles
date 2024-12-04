@@ -44,15 +44,6 @@
     </div>
 
     <ion-item>
-      <ion-label position="stacked">Pasajeros (actuales)</ion-label>
-      <ion-input type="number" [(ngModel)]="nuevoViaje.pasajerosActuales" name="pasajerosActuales" required min="0"></ion-input>
-    </ion-item>
-    <div class="validators" *ngIf="formulario.submitted && !formulario.controls['pasajerosActuales'].valid">
-      <div *ngIf="formulario.controls['pasajerosActuales'].errors?.['required']">El número de pasajeros actuales es requerido</div>
-      <div *ngIf="formulario.controls['pasajerosActuales'].errors?.['min']">Debe ser un valor mayor o igual a 0</div>
-    </div>
-
-    <ion-item>
       <ion-label position="stacked">Pasajeros (máximos)</ion-label>
       <ion-input type="number" [(ngModel)]="nuevoViaje.pasajerosMaximos" name="pasajerosMaximos" required min="1"></ion-input>
     </ion-item>

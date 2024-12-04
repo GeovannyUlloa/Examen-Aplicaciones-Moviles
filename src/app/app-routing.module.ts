@@ -22,6 +22,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule),
 
   },
+  {
+    path: 'confirm-trip',
+    loadChildren: () => import('./confirm-trip/confirm-trip.module').then( m => m.ConfirmTripPageModule)
+  },
 ];
 
 @NgModule({

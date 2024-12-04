@@ -16,7 +16,7 @@ export class AddTripPage {
     hora: '',
     puntoEncuentro: '',
     pasajerosActuales: 0,
-    pasajerosMaximos: 4,
+    pasajerosMaximos: 1,
   };
 
   constructor(private viajesService: ViajesService, private router: Router) {}

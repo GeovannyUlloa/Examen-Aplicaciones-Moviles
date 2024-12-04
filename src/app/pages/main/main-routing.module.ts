@@ -30,7 +30,11 @@ const routes: Routes = [
         pathMatch: 'full'
       }
     ]
+  },  {
+    path: 'viaje-detalle',
+    loadChildren: () => import('./viaje-detalle/viaje-detalle.module').then( m => m.ViajeDetallePageModule)
   }
+
 ];
 
 @NgModule({
