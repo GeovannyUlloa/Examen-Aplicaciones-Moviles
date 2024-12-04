@@ -24,7 +24,7 @@ const routes: Routes = [
   },
   {
     path: 'confirm-trip',
-    loadChildren: () => import('./confirm-trip/confirm-trip.module').then( m => m.ConfirmTripPageModule)
+    loadChildren: () => import('./pages/main/confirm-trip/confirm-trip.module').then( m => m.ConfirmTripPageModule)
   },
 ];
 

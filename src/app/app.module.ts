@@ -10,7 +10,7 @@ import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { HttpClientModule } from '@angular/common/http';
-import { AppHeaderComponent } from './app-header/app-header.component';
+// import { AppHeaderComponent } from './app-header/app-header.component';
 export const firebaseConfig = {
   apiKey: "AIzaSyBK0TMIzr-C65HOhwpNj9wRjZE6Ytb3V5o",
   authDomain: "tellevoapp-1b9a6.firebaseapp.com",
@@ -23,7 +23,7 @@ export const firebaseConfig = {
 initializeApp(firebaseConfig);
 
 @NgModule({
-  declarations: [AppComponent],[AppHeaderComponent]
+  declarations: [AppComponent], // [AppHeaderComponent],
   imports: [
     BrowserModule, 
     IonicModule.forRoot({ mode : 'md' }), 

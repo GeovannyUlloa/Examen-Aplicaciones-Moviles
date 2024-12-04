@@ -25,12 +25,18 @@ const routes: Routes = [
         canActivate: [AuthGuard]
       },
       {
+        path: 'confirm-trip',
+        loadChildren: () => import('./confirm-trip/confirm-trip.module').then(m => m.ConfirmTripPageModule),
+        canActivate: [AuthGuard]
+      },
+      {
         path: '',
         redirectTo: 'home',
         pathMatch: 'full'
       }
     ]
-  },  {
+  },
+  {
     path: 'viaje-detalle',
     loadChildren: () => import('./viaje-detalle/viaje-detalle.module').then( m => m.ViajeDetallePageModule)
   }
