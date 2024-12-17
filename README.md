@@ -6,4 +6,4 @@ Usuario de prueba Pasajero
 Correo: prueba1@gmail.com
 Contraseña: 123456
 
-Tuvimos un problema con el subir el archivo a play store y nos decía quue había que pagar
+Tuvimos un problema con el subir el archivo a play store y nos decía que había que pagar
